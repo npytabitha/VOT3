@@ -601,7 +601,7 @@ begin;
 	string lastSoundName = soundList[list[list.count()]].get_wavefile().get_description();
 
 	loop until
-		isNextSoundRotated(prevSoundName, currSoundName) == false && isNextSoundRotataed(secLastSoundName, lastSoundName) == false
+		isNextSoundRotated(prevSoundName, currSoundName) == false && isNextSoundRotated(secLastSoundName, lastSoundName) == false
 	begin;
 		copiedList.shuffle(pointer, list.count());
 	end;
