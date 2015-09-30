@@ -494,16 +494,58 @@ array<int> soundPortCodes[108] = {
 	101
 };
 
-sub bool isNextSoundRotated(array<int, 1> list, int currentPointer)
+# checks if the next sound or the last 2 sounds are paired-rotated 
+# 
+# @param
+#	prev: name of the prev sound that was played
+#	curr: name of the current sound that has to be played
+#
+# @return
+#		true if any of the above mentioned conditions are fulfilled
+sub bool isNextSoundRotated(string prev, string curr)
 begin;
+	array<string> prevArray[1];
+	array<string> currArray[1];
+	prev.split(".wav", prevArray);
+	curr.split(".wav", currArray);
+
+	string prevPath = prevArray[1];
+	string currPath = currArray[1];
+
+	if prevPath.find(currPath) != 0 || currPath.find(prevPath) != 0 then
+		return true;
+	end;
+
 	return false;
 end;
 
-sub bool isRepeat
+# this subroutine goes through the repeated sounds array and checks if there
+# is an equality for the sound.
+#
+# @param
+#	repeatedSounds: list containing sounds to be repeated
+#	soundToBeChecked: sound that has to be checked if it is repeated
+#
+# @return
+# 		true - if the sound has to be repeated
+#		false - if the sound does not have to be repeated
+sub bool isRepeat(array<sound, 1> repeatedSounds, sound soundToBeChecked)
 begin;
+	
+	loop int i = 1 until i > repeatedSounds.count()
+	begin;
+		if soundToBeChecked == repeatedSounds[i] then
+			return true;
+		end;
+	end;
 	return false;
 end;
 
+# this sub routine creates a list of sounds to be repeated
+# it pulls sounds from the 4 different lists and performs shuffling to introduce
+# random selection on the repeated sounds
+# @return
+#		an array of sounds to be repeated
 sub array<sound, 1> getShuffledRepeated
 begin;
 	array<sound> firstSet[1];
@@ -533,21 +575,65 @@ begin;
 	return firstSet;
 end;
 
+# sub routine that does the checking and ensures that the next sound to be played
+# is not a rotated sound
+#
+# example:
+#	soundsToBePlayed = ("1.wav", "1_rot.wav", "2.wav", "2_rot.wav")
+#	currently playing the 2nd sound
+#	since it is a rotated sound, array will be shuffled from the 2nd element to the last
+#	
+# @param
+#	list: list containing shuffled sound indexes to the soundList
+#	pointer: current sound number that is going to be played
+#
+# @return
+# 	a new array that is shuffled from the index if there is a rotated sound
+#	next
+sub array<int, 1> ensureNextNotRotated(array<int, 1> list, int pointer)
+begin;
+	array<int> copiedList[1];
+	copiedList.assign(list);
+
+	string prevSoundName = soundList[list[pointer - 1]].get_wavefile().get_description();
+	string currSoundName = soundList[list[pointer]];
+	string secLastSoundName = soundList[list[list.count() - 1]].get_wavefile().get_desciption();
+	string lastSoundName = soundList[list[list.count()]].get_wavefile().get_description();
+
+	loop until
+		isNextSoundRotated(prevSoundName, currSoundName) == false && isNextSoundRotataed(secLastSoundName, lastSoundName) == false
+	begin;
+		copiedList.shuffle(pointer, list.count());
+	end;
+
+	return copiedList;
+end;
+
+# sub routine for looping through the 108 sounds once
+# @param
+#	repeatedSounds: an array repeated sounds with "sound" type
+#	shuffledList: contains a shuffled int array
 sub playSounds(array<sound, 1> repeatedSounds, array<int, 1> shuffledList)
 begin;
 	int count = repeatedSounds.count();
 	int pointer = 1;
-	int repeatedPointer = 1;
 	
 	loop until pointer > count
 	begin;
-		sound mainSound = soundList[shuffledList[pointer]];
+		sound currentSound = soundList[shuffledList[pointer]];
 
-		if pointer == 1 then
-			
+		# only needs to check if the next is rotated starting from the 2nd sound onwards
+		if pointer > 1 then
+			shuffledList = ensureNextNotRotated(shuffledList, pointer);
+		end;
+
+		presentIndividualSound(shuffledList[pointer]);
+
+		if isRepeat(repeatedSounds, currentSound) then
+			presentRepeatedSound(shuffledList[pointer]);
 		end;
 		
-		soundList[pointer].get_wavefile().unload();
+		soundList[shuffledList[pointer]].get_wavefile().unload();
 		pointer = pointer + 1;
 	end;
 end;
@@ -586,6 +672,7 @@ begin;
 	ITI.present();
 end;
 
+# sub routine for presenting the dummy sounds
 sub presentDummySounds
 begin;
 	loop int d = 1 until d > 2
@@ -601,6 +688,7 @@ begin;
 	end;
 end;
 
+# this sub routine does the main loop of each block
 sub mainLoop
 begin;
 	presentDummySounds();
@@ -616,3 +704,5 @@ begin;
 		playSounds(repeatedSounds, shuffledList);
 	end;
 end;
+
+mainLoop();
