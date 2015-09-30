@@ -702,6 +702,8 @@ begin;
 		
 		array<sound> repeatedSounds[] = getShuffledRepeated();
 		playSounds(repeatedSounds, shuffledList);
+		break_trials.present();
+		block = block + 1;
 	end;
 end;
 
