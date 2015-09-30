@@ -58,9 +58,7 @@ trial {
 	terminator_button = 3;
 
 	picture {
-		text {font_size = 25; caption = "Ende des Blocks
-
-		Bitte druecke 'Enter' um fortzufahren";
+		text {font_size = 25; caption = "Du kannst jetzt eine Pause machen.\n Bitte informiere die Versuchsleiterin, wenn Du weiter machen moechtest.";
 		};
 		x = 0;
 		y = 0;
@@ -494,6 +492,40 @@ array<int> soundPortCodes[108] = {
 	101
 };
 
+sub presentIndividualSound(int soundIndex)
+begin;
+	fix.present();
+	ITI.set_duration(random(1000, 3000));
+	array<int> buttonCodes[3] = {0, 0, 2};
+	response_manager.set_target_button_codes(buttonCodes);
+	
+	soundList[soundIndex].get_wavefile().load();
+	event1.set_stimulus(soundList[soundIndex]);
+	event1.set_port_code(soundPortCodes[soundIndex]);
+	event1.set_event_code(soundList[soundIndex].description());
+	event1.set_target_button(0);
+	event1.set_response_active(true);
+	
+	trial1.present();
+	response_manager.set_target_button_codes(buttonCodes);
+	ITI.present();
+end;
+
+sub presentRepeatedSound(int soundIndex)
+begin;
+	fix.present();
+	ITI.set_duration(random(1000, 3000));
+	array<int> repeatedCodes[3] = {0, 0, 1};
+	response_manager.set_target_button_codes(repeatedCodes);
+	
+	eventR.set_stimulus(soundList[soundIndex]);
+	eventR.set_port_code(11);
+	
+	trialR.present();
+	response_manager.set_target_button_codes(repeatedCodes);
+	ITI.present();
+end;
+
 # checks if the next sound or the last 2 sounds are paired-rotated 
 # 
 # @param
@@ -511,6 +543,11 @@ begin;
 
 	string prevPath = prevArray[1];
 	string currPath = currArray[1];
+	
+#	term.print_line("-------------------------");
+#	term.print_line(prevPath);
+#	term.print_line(currPath);
+#	term.print_line("-------------------------");
 
 	if prevPath.find(currPath) != 0 || currPath.find(prevPath) != 0 then
 		return true;
@@ -519,8 +556,8 @@ begin;
 	return false;
 end;
 
-# this subroutine goes through the repeated sounds array and checks if there
-# is an equality for the sound.
+# this subroutine goes through the repeated sounds array and checks if the array
+# of repeated sounds contains this sound to be checked
 #
 # @param
 #	repeatedSounds: list containing sounds to be repeated
@@ -534,9 +571,13 @@ begin;
 	
 	loop int i = 1 until i > repeatedSounds.count()
 	begin;
-		if soundToBeChecked == repeatedSounds[i] then
+		string check = soundToBeChecked.get_wavefile().filename();
+		string repeat = repeatedSounds[i].get_wavefile().filename();
+		
+		if check == repeat then
 			return true;
 		end;
+		i = i + 1;
 	end;
 	return false;
 end;
@@ -595,15 +636,19 @@ begin;
 	array<int> copiedList[1];
 	copiedList.assign(list);
 
-	string prevSoundName = soundList[list[pointer - 1]].get_wavefile().get_description();
-	string currSoundName = soundList[list[pointer]];
-	string secLastSoundName = soundList[list[list.count() - 1]].get_wavefile().get_desciption();
-	string lastSoundName = soundList[list[list.count()]].get_wavefile().get_description();
-
+	string prevSoundName = soundList[copiedList[pointer - 1]].get_wavefile().filename();
+	string currSoundName = soundList[copiedList[pointer]].get_wavefile().filename();
+	string secLastSoundName = soundList[copiedList[list.count() - 1]].get_wavefile().filename();
+	string lastSoundName = soundList[copiedList[copiedList.count()]].get_wavefile().filename();
+	
 	loop until
 		isNextSoundRotated(prevSoundName, currSoundName) == false && isNextSoundRotated(secLastSoundName, lastSoundName) == false
 	begin;
 		copiedList.shuffle(pointer, list.count());
+		prevSoundName = soundList[copiedList[pointer - 1]].get_wavefile().filename();
+		currSoundName = soundList[copiedList[pointer]].get_wavefile().filename();
+		secLastSoundName = soundList[copiedList[list.count() - 1]].get_wavefile().filename();
+		lastSoundName = soundList[copiedList[copiedList.count()]].get_wavefile().filename();
 	end;
 
 	return copiedList;
@@ -615,20 +660,22 @@ end;
 #	shuffledList: contains a shuffled int array
 sub playSounds(array<sound, 1> repeatedSounds, array<int, 1> shuffledList)
 begin;
-	int count = repeatedSounds.count();
+	int count = shuffledList.count();
 	int pointer = 1;
 	
 	loop until pointer > count
 	begin;
-		sound currentSound = soundList[shuffledList[pointer]];
+		term.print("pointer: "); term.print_line(pointer);
 
 		# only needs to check if the next is rotated starting from the 2nd sound onwards
 		if pointer > 1 then
 			shuffledList = ensureNextNotRotated(shuffledList, pointer);
 		end;
+		
+		sound currentSound = soundList[shuffledList[pointer]];
 
 		presentIndividualSound(shuffledList[pointer]);
-
+		
 		if isRepeat(repeatedSounds, currentSound) then
 			presentRepeatedSound(shuffledList[pointer]);
 		end;
@@ -638,43 +685,13 @@ begin;
 	end;
 end;
 
-sub presentIndividualSound(int soundIndex)
-begin;
-	fix.present();
-	ITI.set_duration(random(1000, 3000));
-	array<int> buttonCodes[3] = {0, 0, 2};
-	response_manager.set_target_button_codes(buttonCodes);
-	
-	soundList[soundIndex].get_wavefile().load();
-	event1.set_stimulus(soundList[soundIndex]);
-	event1.set_port_code(soundPortCodes[soundIndex]);
-	event1.set_event_code(soundList[soundIndex].description());
-	event1.set_target_button(0);
-	event1.set_response_active(true);
-	
-	trial1.present();
-	response_manager.set_target_button_codes(buttonCodes);
-	ITI.present();
-end;
 
-sub presentRepeatedSound(int soundIndex)
-begin;
-	fix.present();
-	ITI.set_duration(random(1000, 3000));
-	array<int> repeatedCodes[3] = {0, 0, 1};
-	response_manager.set_target_button_codes(repeatedCodes);
-	
-	eventR.set_stimulus(soundList[soundIndex]);
-	eventR.set_port_code(11);
-	
-	trialR.present();
-	response_manager.set_target_button_codes(repeatedCodes);
-	ITI.present();
-end;
 
 # sub routine for presenting the dummy sounds
 sub presentDummySounds
 begin;
+	soundListD.shuffle();
+	
 	loop int d = 1 until d > 2
 	begin;
 		fix.present();
@@ -688,11 +705,22 @@ begin;
 	end;
 end;
 
+sub printRepeatList(array<sound, 1> repeatedList)
+begin;
+
+	loop int i = 1 until i > repeatedList.count()
+	begin;
+		string repeatedSound = repeatedList[i].get_wavefile().filename();
+		term.print_line(repeatedSound);
+		i = i + 1;
+	end;
+end;
+
 # this sub routine does the main loop of each block
 sub mainLoop
 begin;
 	presentDummySounds();
-	
+
 	loop int block = 1 until block > 3
 	begin;	
 		#shuffle sound list array reference
@@ -701,7 +729,9 @@ begin;
 		shuffledList.shuffle();
 		
 		array<sound> repeatedSounds[] = getShuffledRepeated();
-		playSounds(repeatedSounds, shuffledList);
+		printRepeatList(repeatedSounds);
+		
+		playSounds(repeatedSounds, shuffledList); 		# this is where the 108 sounds are played
 		break_trials.present();
 		block = block + 1;
 	end;
