@@ -24,27 +24,27 @@ time = 0;
 #    picture that shows the craving scale with highlighted number
 picture {
     text { caption = " -2 "; font_size = 36; } rate1_2;
-        x = -320; y = -300; 
+        x = -320; y = -230; 
 	 text { caption = " -1 "; font_size = 36; } rate2_2;
-        x = -160; y = -300; 
+        x = -160; y = -230; 
 	 text { caption = " 0 "; font_size = 36; } rate3_2;
-        x = 0; y = -300; 
+        x = 0; y = -230; 
 	 text { caption = " 1 "; font_size = 36; } rate4_2;
-        x = 160; y = -300; 
+        x = 160; y = -230; 
 	 text { caption = " 2 "; font_size = 36; } rate5_2;
-        x = 320; y = -300;     
+        x = 320; y = -230;     
     text { caption = "^"; font_size = 32; font_color = 255, 255, 255; } textScaleLabel2;            
-        x = 0; y = -380;    
+        x = 0; y = -280;    
     text { caption = "Bitte benutze die links/rechts Tasten (kleine Pfeilspitzen) um Dich auf der Skala zu bewegen. 
-Druecke die 'Enter' Taste um Deine Auswahl zu bestaetigen."; font_size = 24; text_align = align_center; width=50; } textScaleLabelCenter2;
-        x = 0; y = -450;
+Druecke die 'Enter' Taste um Deine Auswahl zu bestaetigen."; font_size = 20; text_align = align_center; width=50; } textScaleLabelCenter2;
+        x = 0; y = -330;
     text { caption = "0"; font_size = 36; font_color = 255, 0, 0; } textRating2;
-        x = 0; y = -150;
+        x = 0; y = -130;
         text { 
 caption = "Wie positiv (+2) oder negativ (-2) fuehlst Du Dich ich im Moment?"; 
 font = "Arial";
 font_color = 255,255,255; #white
-font_size = 32;
+font_size = 27;
 } textFixation2; 
 x = 0; y = 0;    
     
@@ -53,29 +53,29 @@ x = 0; y = 0;
 picture {
 
     text { caption = " 0 "; font_size = 36; } rate1_3;
-        x = -325; y = -300; 
+        x = -325; y = -230; 
 	 text { caption = " 1 "; font_size = 36; } rate2_3;
-        x = -195; y = -300; 
+        x = -195; y = -230; 
 	 text { caption = " 2 "; font_size = 36; } rate3_3;
-        x = -65; y = -300; 
+        x = -65; y = -230; 
 	 text { caption = " 3 "; font_size = 36; } rate4_3;
-        x = 65; y = -300; 
+        x = 65; y = -230; 
 	 text { caption = " 4 "; font_size = 36; } rate5_3;
-        x = 195; y = -300; 
+        x = 195; y = -230; 
   	 text { caption = " 5 "; font_size = 36; } rate6_3;
-        x = 325; y = -300;   
+        x = 325; y = -230;   
     text { caption = "^"; font_size = 32; font_color = 255, 255, 255; } textScaleLabel3;            
-        x = -325; y = -380;    
+        x = -325; y = -280;    
     text { caption = "Bitte benutze die links/rechts Tasten (kleine Pfeilspitzen) um Dich auf der Skala zu bewegen. 
-Druecke die 'Enter' Taste um Deine Auswahl zu bestaetigen."; font_size = 24; text_align = align_center; width=50; } textScaleLabelCenter3;
-        x = 0; y = -450;
+Druecke die 'Enter' Taste um Deine Auswahl zu bestaetigen."; font_size = 20; text_align = align_center; width=50; } textScaleLabelCenter3;
+        x = 0; y = -330;
     text { caption = "0"; font_size = 36; font_color = 255, 0, 0; } textRating3;
-        x = 0; y = -150;
+        x = 0; y = -130;
         text { 
 caption = "Wie entspannt (0) oder erregt (5) fuehlst Du Dich im Moment?"; 
 font = "Arial";
 font_color = 255,255,255; #white
-font_size = 32;
+font_size = 27;
 } textFixation3; 
 x = 0; y = 0;    
     
@@ -90,86 +90,93 @@ int DEC_BUTTON = 1;
 int RATING_BUTTON = 3;
 array<int> x_coords[5] = { -320, -160, 0, 160, 320 };
 array<int> x_coords3[6] = { -325, -195, -65, 65, 195, 325 };
-array<int> aButtonCodes[5][2] = { { -2,1 }, { -1,2 }, { 0,3 }, { 1,4 }, { 2,5 }};
-array<int> aButtonCodes3[6][2] = { { 0,1 }, { 1,2 }, { 2,3 }, { 3,4 }, { 4,5 }, {5,6}} ;
 
 # --- sub get_rating
 
 sub
     int get_rating2( int starting_val )
 begin
-    
+	
     # Set the starting position of the rating
     int curr_pos = starting_val;
+	 bool exit = false;
 
-    # Now run the loop until we run out of time
-    loop 
-    until
-        response_manager.response_count(3) == 1
-    begin
-        # Set the x coordinate of the rating and update the caption
-        picUserRatingScale2.set_part_x( 6, x_coords[curr_pos] );
-        textRating2.set_caption( string( aButtonCodes[curr_pos][1] ), true );
-        
+   # Now run the loop until we run out of time
+   loop 
+   until
+		exit == true
+   begin
+      # Set the x coordinate of the rating and update the caption
+      int captionNum = curr_pos - 3;
+		picUserRatingScale2.set_part_x(6, x_coords[curr_pos]);
+      textRating2.set_caption( string(captionNum), true );
+
         # Present the picture
         picUserRatingScale2.present();
         
-			if (response_manager.last_response() == 2) then
-				if ( aButtonCodes[curr_pos][1] < 2 ) then
-					curr_pos = starting_val + (response_manager.response_count(2)) - (response_manager.response_count(1));
-				else
-					curr_pos = curr_pos;
+			system_keyboard.set_max_length(1);
+			string input = system_keyboard.get_input();
+		
+			if(input == "1") then
+				curr_pos = curr_pos - 1;
+				if(curr_pos < 1) then
+					curr_pos = 1;
+				end
+			elseif(input == "2") then
+				curr_pos = curr_pos + 1;
+				if(curr_pos > 5) then
+					curr_pos = 5;
 				end;
-			elseif (response_manager.last_response() == 1) then
-				if ( aButtonCodes[curr_pos][1] > -2 ) then
-					curr_pos = starting_val + (response_manager.response_count(2)) - (response_manager.response_count(1));
-				else
-					curr_pos = curr_pos;
-				end;
+			elseif(input == "") then
+				exit = true;
 			end;
 				
     end;
-    return aButtonCodes[curr_pos][1];
+    return curr_pos - 3;
 end;
 
 int rating2 = get_rating2(3);
 
-
 sub
     int get_rating3( int starting_val )
 begin
-    
+	
     # Set the starting position of the rating
     int curr_pos = starting_val;
-	 int n = response_manager.response_count(2) - response_manager.response_count(1);
-    # Now run the loop until we run out of time
-    loop 
-    until
-        response_manager.response_count(3) == 2
-    begin
+	 bool exit = false;
+
+   # Now run the loop until we run out of time
+   loop 
+   until
+		exit == true
+   begin
         # Set the x coordinate of the rating and update the caption
-        picUserRatingScale3.set_part_x( 7, x_coords3[curr_pos] );
-        textRating3.set_caption( string( aButtonCodes3[curr_pos][1] ), true );
-        
+			int captionNum = curr_pos - 1;
+			picUserRatingScale3.set_part_x(7, x_coords3[curr_pos]);
+			textRating3.set_caption( string(captionNum), true );
+     
         # Present the picture
         picUserRatingScale3.present();
         
-			if (response_manager.last_response() == 2) then
-				if ( aButtonCodes3[curr_pos][1] < 5 ) then
-					curr_pos = starting_val + (response_manager.response_count(2)) - (response_manager.response_count(1)) - n;
-				else
-					curr_pos = curr_pos;
+		  system_keyboard.set_max_length(1);
+		  string input = system_keyboard.get_input();
+		
+		  if(input == "1") then
+				curr_pos = curr_pos - 1;
+				if(curr_pos < 1) then
+					curr_pos = 1;
+				end
+			elseif(input == "2") then
+				curr_pos = curr_pos + 1;
+				if(curr_pos > 6) then
+					curr_pos = 6;
 				end;
-			elseif (response_manager.last_response() == 1) then
-				if ( aButtonCodes3[curr_pos][1] > 0 ) then
-					curr_pos = starting_val + (response_manager.response_count(2)) - (response_manager.response_count(1)) - n;
-				else
-					curr_pos = curr_pos;
-				end;
+			elseif(input == "") then
+				exit = true;
 			end;
 				
     end;
-    return aButtonCodes3[curr_pos][1];
+    return curr_pos - 1;
 end;
 
 int rating3 = get_rating3(1);
@@ -185,3 +192,4 @@ rating.print( rating3 );
 rating.close();
 
 endblock.present();
+
