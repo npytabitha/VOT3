@@ -27,9 +27,9 @@ trial {
 	terminator_button = 3;
 
 	picture {
-		text {font_size = 20; caption = "Heute wirst Du auf dem Arm gestreichelt.
+		text {font_size = 25; caption = "Heute wirst Du auf dem Arm gestreichelt.
 
-Wenn Du bereit bist zu beginnen, druecke bitte die 'Enter' Taste."; };
+		Wenn Du bereit bist zu beginnen, druecke bitte die 'Enter' Taste."; };
 		x = 0;
 		y = 0;
 	};
@@ -58,7 +58,7 @@ trial {
 	terminator_button = 3;
 
 	picture {
-		text {font_size = 20; caption = "Du kannst jetzt eine Pause machen.\n Bitte informiere die Versuchsleiterin, wenn Du weiter machen moechtest.";
+		text {font_size = 25; caption = "Du kannst jetzt eine Pause machen.\n Bitte informiere die Versuchsleiterin, wenn Du weiter machen moechtest.";
 		};
 		x = 0;
 		y = 0;
@@ -697,7 +697,6 @@ begin;
 		fix.present();
 		soundListD[d].get_wavefile().load();
 		event1.set_stimulus(soundListD[d]);
-		event1.set_event_code("dummy");
 		ITI.set_duration(random(1000, 3000));
 		trial1.present();
 		ITI.present();
@@ -720,9 +719,10 @@ end;
 # this sub routine does the main loop of each block
 sub mainLoop
 begin;
-	
+	presentDummySounds();
+
 	loop int block = 1 until block > 3
-	begin;
+	begin;	
 		#shuffle sound list array reference
 		array<int> shuffledList[108];
 		shuffledList.fill(1, 108, 1, 1);
@@ -731,7 +731,6 @@ begin;
 		array<sound> repeatedSounds[] = getShuffledRepeated();
 		printRepeatList(repeatedSounds);
 		
-		presentDummySounds();
 		playSounds(repeatedSounds, shuffledList); 		# this is where the 108 sounds are played
 		break_trials.present();
 		block = block + 1;

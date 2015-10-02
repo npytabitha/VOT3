@@ -1,0 +1,26 @@
+
+No_touch_ratingPre: 
+Rating 2: 0
+Rating 3: 0
+Palm_touch_ratingPost: 
+Rating 1: 0
+Rating 2: 0
+Rating 3: 0
+No_touch_ratingPre: 
+Rating 2: 0
+Rating 3: 1
+No_touch_ratingPre: 
+Rating 2: 2
+Rating 3: 5
+Arm_touch_ratingPost: 
+Rating 1: 0
+Rating 2: 0
+Rating 3: 6
+Arm_touch_ratingPost: 
+Rating 1: 1
+Rating 2: -1
+Rating 3: 1
+Arm_touch_ratingPost: 
+Rating 1: 0
+Rating 2: 0
+Rating 3: 0

@@ -24,27 +24,27 @@ time = 0;
 #    picture that shows the craving scale with highlighted number
 picture {
     text { caption = " -2 "; font_size = 36; } rate1_2;
-        x = -320; y = -300; 
+        x = -320; y = -230; 
 	 text { caption = " -1 "; font_size = 36; } rate2_2;
-        x = -160; y = -300; 
+        x = -160; y = -230; 
 	 text { caption = " 0 "; font_size = 36; } rate3_2;
-        x = 0; y = -300; 
+        x = 0; y = -230; 
 	 text { caption = " 1 "; font_size = 36; } rate4_2;
-        x = 160; y = -300; 
+        x = 160; y = -230; 
 	 text { caption = " 2 "; font_size = 36; } rate5_2;
-        x = 320; y = -300;     
+        x = 320; y = -230;     
     text { caption = "^"; font_size = 32; font_color = 255, 255, 255; } textScaleLabel2;            
-        x = 0; y = -380;    
+        x = 0; y = -280;    
     text { caption = "Bitte benutze die links/rechts Tasten (kleine Pfeilspitzen) um Dich auf der Skala zu bewegen. 
-Druecke die 'Enter' Taste um Deine Auswahl zu bestaetigen."; font_size = 24; text_align = align_center; width=50; } textScaleLabelCenter2;
-        x = 0; y = -450;
+Druecke die 'Enter' Taste um Deine Auswahl zu bestaetigen."; font_size = 20; text_align = align_center; width=50; } textScaleLabelCenter2;
+        x = 0; y = -330;
     text { caption = "0"; font_size = 36; font_color = 255, 0, 0; } textRating2;
-        x = 0; y = -150;
+        x = 0; y = -130;
         text { 
 caption = "Wie positiv (+2) oder negativ (-2) fuehlst Du Dich ich im Moment?"; 
 font = "Arial";
 font_color = 255,255,255; #white
-font_size = 32;
+font_size = 27;
 } textFixation2; 
 x = 0; y = 0;    
     
@@ -53,29 +53,29 @@ x = 0; y = 0;
 picture {
 
     text { caption = " 0 "; font_size = 36; } rate1_3;
-        x = -325; y = -300; 
+        x = -325; y = -230; 
 	 text { caption = " 1 "; font_size = 36; } rate2_3;
-        x = -195; y = -300; 
+        x = -195; y = -230; 
 	 text { caption = " 2 "; font_size = 36; } rate3_3;
-        x = -65; y = -300; 
+        x = -65; y = -230; 
 	 text { caption = " 3 "; font_size = 36; } rate4_3;
-        x = 65; y = -300; 
+        x = 65; y = -230; 
 	 text { caption = " 4 "; font_size = 36; } rate5_3;
-        x = 195; y = -300; 
+        x = 195; y = -230; 
   	 text { caption = " 5 "; font_size = 36; } rate6_3;
-        x = 325; y = -300;   
+        x = 325; y = -230;   
     text { caption = "^"; font_size = 32; font_color = 255, 255, 255; } textScaleLabel3;            
-        x = -325; y = -380;    
+        x = -325; y = -280;    
     text { caption = "Bitte benutze die links/rechts Tasten (kleine Pfeilspitzen) um Dich auf der Skala zu bewegen. 
-Druecke die 'Enter' Taste um Deine Auswahl zu bestaetigen."; font_size = 24; text_align = align_center; width=50; } textScaleLabelCenter3;
-        x = 0; y = -450;
+Druecke die 'Enter' Taste um Deine Auswahl zu bestaetigen."; font_size = 20; text_align = align_center; width=50; } textScaleLabelCenter3;
+        x = 0; y = -330;
     text { caption = "0"; font_size = 36; font_color = 255, 0, 0; } textRating3;
-        x = 0; y = -150;
+        x = 0; y = -130;
         text { 
 caption = "Wie entspannt (0) oder erregt (5) fuehlst Du Dich im Moment?"; 
 font = "Arial";
 font_color = 255,255,255; #white
-font_size = 32;
+font_size = 27;
 } textFixation3; 
 x = 0; y = 0;    
     
